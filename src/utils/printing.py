@@ -1,4 +1,17 @@
 class Printing:
+    """
+    A class for printing to the console.
+
+    Attributes:
+        None
+
+    Methods:
+        clear():
+            Clear the console screen.
+        align_column(column: list) -> list:
+            Aligns the columns by padding strings with spaces.
+    """
+
     def clear():
         """
         Clear the console screen.

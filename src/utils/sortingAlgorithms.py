@@ -1,4 +1,15 @@
 class SortingAlgorithms:
+    """
+    A class containing sorting algorithms.
+
+    Attributes:
+        None
+
+    Methods:
+        sort_scores(score_list: list, player_list: list) -> tuple[list, list]:
+            Sorts the scores and players in ascending order.
+    """
+
     def sort_scores(score_list: list, player_list: list) -> tuple[list, list]:
         """
         Sorts the scores and players in ascending order.
