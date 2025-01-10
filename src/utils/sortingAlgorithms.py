@@ -1,5 +1,16 @@
 class SortingAlgorithms:
     def sort_scores(score_list: list, player_list: list) -> tuple[list, list]:
+        """
+        Sorts the scores and players in ascending order.
+
+        Parameters:
+            score_list (list): A list of scores to be sorted.
+            player_list (list): A list of players to be sorted.
+
+        Returns:
+            tuple[list, list]: A tuple containing the sorted scores and players.
+        """
+        
         length = len(score_list)
 
         if len(player_list) != length:

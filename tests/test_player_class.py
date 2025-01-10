@@ -7,13 +7,18 @@ from unittest.mock import patch
 class TestPlayer(TestCase):
     def setUp(self):
         print("Setting up test environment...")
-        self.test_player = Player(0, "test", "East", 0)
+        self.test_player = Player("test", "East", 0)
 
     def tearDown(self):
         print("Tearing down test environment...")
         self.test_player = None
 
-    def test_init(self):
+    @patch("src.player.Player.get_id")
+    def test_init(self, mock_get_id):
+        # Setup
+        mock_get_id.return_value = 0
+
+        # Test
         self.assertEqual(self.test_player.get_id(), 0)
         self.assertEqual(self.test_player.name, "test")
         self.assertEqual(self.test_player.wind, "East")
@@ -118,6 +123,10 @@ class TestPlayer(TestCase):
         # Test
         self.assertEqual(self.test_player.wind, "South")
 
-    def test_get_id(self):
+    @patch("src.player.Player.get_id")
+    def test_get_id(self, mock_get_id):
+        # Setup
+        mock_get_id.return_value = 0
+        
         # Execute and Test
         self.assertEqual(self.test_player.get_id(), 0)

@@ -1,8 +1,25 @@
 class Printing:
     def clear():
+        """
+        Clear the console screen.
+
+        Returns:
+            None
+        """
+
         print("\n" * 20)
 
     def align_column(column: list) -> list:
+        """
+        Aligns the columns by padding strings with spaces.
+
+        Parameters:
+            column (list): A list of strings to be aligned.
+
+        Returns:
+            list: A list of aligned strings.
+        """
+
         no_changes = False
 
         while not no_changes:
