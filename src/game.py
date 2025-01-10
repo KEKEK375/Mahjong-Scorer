@@ -6,13 +6,13 @@ class Game:
 
     def __init__(self) -> None:
         self.winds = {0: "East", 1: "South", 2: "West", 3: "North"}
-        self.windOfTheRound = self.winds[0]
-        self.currentRound = 0
-        self.windWon = False
-        self.runGameLoop()
+        self.wind_of_the_round = self.winds[0]
+        self.current_round = 0
+        self.wind_won = False
+        self.run_game_loop()
 
-    def runGameLoop(self):
-        self.players = self.setPlayers()
+    def run_game_loop(self):
+        self.players = self.set_players()
 
         choice = ""
 
@@ -29,14 +29,14 @@ class Game:
 
             match choice.lower():
                 case "s":
-                    self.currentRound += 1
-                    self.scoreGame()
-                    self.resetRound()
+                    self.current_round += 1
+                    self.score_game()
+                    self.reset_round()
                     Printing.clear()
-                    self.displayScores()
+                    self.display_scores()
 
                 case "i":
-                    self.displayInfo()
+                    self.display_info()
 
                 case "q":
                     pass
@@ -44,72 +44,72 @@ class Game:
                 case _:
                     print("Invalid option...")
 
-    def setPlayers(self) -> dict:
+    def set_players(self) -> dict:
         players = {}
 
         for i in range(4):
-            playerName = input(f"({self.winds[i]}) Enter player {i +1}'s name: ")
-            players[i] = Player(i, playerName, self.winds[i])
+            player_name = input(f"({self.winds[i]}) Enter player {i +1}'s name: ")
+            players[i] = Player(i, player_name, self.winds[i])
 
         return players
 
-    def scoreGame(self) -> None:
+    def score_game(self) -> None:
         winner = input("Who won the round? ")
-        while not self.validName(winner):
+        while not self.valid_name(winner):
             winner = input("Invalid name, try again. Who won the round? ")
 
         for i in range(4):
             try:
-                self.players[i].roundScore = int(
+                self.players[i].round_score = int(
                     input(f"What was {self.players[i].name}'s score: ")
                 )
             except:
                 raise Exception("Invalid score entered")
 
             if self.players[i].name == winner:
-                self.players[i].isWinner = True
+                self.players[i].is_winner = True
 
         for i in range(4):
-            self.scorePlayer(self.players[i])
+            self.score_player(self.players[i])
 
-    def scorePlayer(self, player: Player) -> None:
+    def score_player(self, player: Player) -> None:
 
-        if player.isWinner:
-            if player.wind == self.windOfTheRound:
-                player.points += player.roundScore * 6
-                self.windWon = True
+        if player.is_winner:
+            if player.wind == self.wind_of_the_round:
+                player.points += player.round_score * 6
+                self.wind_won = True
             else:
-                player.points += player.roundScore * 4
+                player.points += player.round_score * 4
         else:
-            for otherPlayer in self.players.values():
-                if player.getId() != otherPlayer.getId():
-                    if otherPlayer.isWinner:
-                        scoreChange = otherPlayer.roundScore * -1
+            for other_player in self.players.values():
+                if player.get_id() != other_player.get_id():
+                    if other_player.is_winner:
+                        score_change = other_player.round_score * -1
                     else:
-                        scoreChange = player.roundScore - otherPlayer.roundScore
+                        score_change = player.round_score - other_player.round_score
                     if (
-                        player.wind == self.windOfTheRound
-                        or otherPlayer.wind == self.windOfTheRound
+                        player.wind == self.wind_of_the_round
+                        or other_player.wind == self.wind_of_the_round
                     ):
-                        scoreChange = scoreChange * 2
-                    player.points += scoreChange
+                        score_change = score_change * 2
+                    player.points += score_change
 
-    def displayScores(self) -> None:
-        playerList = []
-        scoreList = []
+    def display_scores(self) -> None:
+        player_list = []
+        score_list = []
         for player in self.players.values():
-            playerList.append(player.name)
-            scoreList.append(player.points)
+            player_list.append(player.name)
+            score_list.append(player.points)
 
-        scoreList, playerList = SortingAlgorithms.sortScores(scoreList, playerList)
+        score_list, player_list = SortingAlgorithms.sort_scores(score_list, player_list)
 
         for i in range(4):
             print("Current Scores:")
-            print(f"{playerList[i]}: {scoreList[i]}")
+            print(f"{player_list[i]}: {score_list[i]}")
 
         input("\nEnter to continue...")
 
-    def displayInfo(self):
+    def display_info(self):
         # =======================
         # | Round x             |
         # |---------------------|
@@ -119,54 +119,54 @@ class Game:
         # =======================
         prefix = "| "
         suffix = " |"
-        rowLength = 16
+        row_length = 16
         columns = []
         columns.append(["Names ", "Wind  ", "Points"])
 
         for player in self.players.values():
             column = [player.name, player.wind, str(player.points)]
-            Printing.alignColumn(column)
-            rowLength += len(column[0])
+            Printing.align_column(column)
+            row_length += len(column[0])
             columns.append(column)
 
-        roundRow = "Round " + str(self.currentRound)
-        while len(roundRow) < rowLength - 2:
-            roundRow += " "
+        round_row = "Round " + str(self.current_round)
+        while len(round_row) < row_length - 2:
+            round_row += " "
 
-        ends = "=" * (rowLength + 2)
-        separator = "-" * rowLength
+        ends = "=" * (row_length + 2)
+        separator = "-" * row_length
 
-        namesRow = ""
-        windRow = ""
-        pointsRow = ""
+        names_row = ""
+        wind_row = ""
+        points_row = ""
         for column in columns:
-            namesRow += column[0] + "  "
-            windRow += column[1] + "  "
-            pointsRow += column[2] + "  "
+            names_row += column[0] + "  "
+            wind_row += column[1] + "  "
+            points_row += column[2] + "  "
 
         print(ends)
-        print(prefix + roundRow + suffix)
+        print(prefix + round_row + suffix)
         print(prefix[0] + separator + suffix[1])
-        print(prefix + namesRow[0:-2] + suffix)
-        print(prefix + windRow[0:-2] + suffix)
-        print(prefix + pointsRow[0:-2] + suffix)
+        print(prefix + names_row[0:-2] + suffix)
+        print(prefix + wind_row[0:-2] + suffix)
+        print(prefix + points_row[0:-2] + suffix)
         print(ends)
         input("\nEnter to continue...")
 
-    def resetRound(self):
+    def reset_round(self):
         for player in self.players.values():
-            player.resetAfterRound(self.windWon)
-        self.windWon = False
+            player.reset_after_round(self.wind_won)
+        self.wind_won = False
 
-    def validName(self, name) -> bool:
-        return name in self.getPlayerNames()
+    def valid_name(self, name) -> bool:
+        return name in self.get_player_names()
 
-    def getPlayers(self) -> dict:
+    def get_players(self) -> dict:
         return self.players.values()
 
-    def getPlayerNames(self) -> list:
+    def get_player_names(self) -> list:
         names = []
-        for player in self.getPlayers():
+        for player in self.get_players():
             names.append(player.name)
 
         return names

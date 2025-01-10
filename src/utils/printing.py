@@ -2,16 +2,16 @@ class Printing:
     def clear():
         print("\n" * 20)
 
-    def alignColumn(column: list) -> list:
-        noChanges = False
+    def align_column(column: list) -> list:
+        no_changes = False
 
-        while not noChanges:
-            noChanges = True
+        while not no_changes:
+            no_changes = True
             for i in range(len(column) - 1):
                 while len(column[i]) > len(column[i + 1]):
                     column[i + 1] += " "
-                    noChanges = False
+                    no_changes = False
                 while len(column[i]) < len(column[i + 1]):
                     column[i] += " "
-                    noChanges = False
+                    no_changes = False
         return column
