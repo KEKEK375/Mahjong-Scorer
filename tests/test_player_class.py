@@ -1,7 +1,7 @@
 from unittest import TestCase
 from src.player import Player
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 class TestPlayer(TestCase):
     def setUp(self):

@@ -170,7 +170,3 @@ class Game:
             names.append(player.name)
 
         return names
-
-
-if __name__ == "__main__":
-    myGame = Game()
