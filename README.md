@@ -17,9 +17,12 @@ Features
 
 Installation
 ------------
-To install the package, clone the repository:
+To install the package, clone the repository and install the requirements:
 
-``git clone https://github.com/KEKEK375/Mahjong-Scorer.git``
+```bash
+git clone https://github.com/KEKEK375/Mahjong-Scorer.git
+pip install -r requirements.txt
+```
 
 Usage
 -----
