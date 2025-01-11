@@ -77,7 +77,7 @@ class Player:
         """
         return self.name
 
-    def reset_after_round(self, wind_won) -> None:
+    def reset_after_round(self, wind_won: bool) -> None:
         """
         Resets the player after a round.
 
