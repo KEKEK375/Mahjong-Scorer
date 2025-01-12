@@ -58,6 +58,7 @@ class Game:
         self.winds = {0: "East", 1: "South", 2: "West", 3: "North"}
         self.wind_of_the_round = self.winds[0]
         self.current_round = 0
+        self.rounds_wind_lost = 0
         self.wind_won = False
         self.run_game_loop()
 
@@ -84,22 +85,21 @@ class Game:
 
             Printing.clear()
 
-            match choice.lower():
-                case "s":
-                    self.current_round += 1
-                    self.score_game()
-                    self.reset_round()
-                    Printing.clear()
-                    self.display_scores()
+            if choice.lower() == "s":
+                self.current_round += 1
+                self.score_game()
+                self.reset_round()
+                Printing.clear()
+                self.display_scores()
 
-                case "i":
-                    self.display_info()
+            elif choice.lower() == "i":
+                self.display_info()
 
-                case "q":
-                    pass
+            elif choice.lower() == "q":
+                pass
 
-                case _:
-                    print("Invalid option...")
+            else:
+                print("Invalid option...")
 
     def set_players(self) -> dict:
         """
@@ -254,6 +254,21 @@ class Game:
         Returns:
             None
         """
+
+        if not self.wind_won:
+            self.rounds_wind_lost += 1
+            if self.rounds_wind_lost == 4:
+                for i in range(len(self.winds)):
+                    if self.wind_of_the_round == self.winds[i]:
+                        pos = i
+                        break
+                if pos == 3:
+                    self.wind_of_the_round = self.winds[0]
+                    print(f"wind: {self.wind_of_the_round}")
+                else:
+                    self.wind_of_the_round = self.winds[i + 1]
+                    print(f"wind: {self.wind_of_the_round}")
+
 
         for player in self.players.values():
             player.reset_after_round(self.wind_won)

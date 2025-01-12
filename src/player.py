@@ -101,18 +101,17 @@ class Player:
             str: the next wind the player will be assigned
         """
 
-        match self.wind.lower():
-            case "east":
-                return "North"
-            case "south":
-                return "East"
-            case "west":
-                return "South"
-            case "north":
-                return "West"
-            case _:
-                if not self.is_valid_wind():
-                    raise Exception(f"Invalid wind assigned: {self.wind}")
+        if self.wind.lower() == "east":
+            return "North"
+        elif self.wind.lower() == "south":
+            return "East"
+        elif self.wind.lower() == "west":
+            return "South"
+        elif self.wind.lower() == "north":
+            return "West"
+        else:
+            if not self.is_valid_wind():
+                raise Exception(f"Invalid wind assigned: {self.wind}")
 
     def is_valid_wind(self, wind: str = None) -> bool:
         """
