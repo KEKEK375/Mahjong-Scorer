@@ -81,21 +81,20 @@ class CLI:
 
             Printing.clear()
 
-            match choice.lower():
-                case "s":
-                    self.score_game()
-                    self.reset_round()
-                    Printing.clear()
-                    self.display_scores()
+            if choice.lower() == "s":
+                self.score_game()
+                self.reset_round()
+                Printing.clear()
+                self.display_scores()
 
-                case "i":
-                    self.display_info()
+            elif choice.lower() == "i":
+                self.display_info()
 
-                case "q":
-                    pass
+            elif choice.lower() == "q":
+                pass
 
-                case _:
-                    print("Invalid option...")
+            else:
+                print("Invalid option...")
 
     def set_players(self) -> None:
         """
