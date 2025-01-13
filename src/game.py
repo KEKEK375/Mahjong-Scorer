@@ -206,7 +206,7 @@ class Game:
                 else:
                     self.wind_of_the_round = self.winds[i + 1]
                     print(f"wind: {self.wind_of_the_round}")
-                    
+
 
         for player in self.players.values():
             player.reset_after_round(self.wind_won)
