@@ -2,6 +2,7 @@ from src.player import Player
 from src.utils.printing import Printing
 from src.utils.sortingAlgorithms import SortingAlgorithms
 
+
 class Game:
     """
     A class to represent a Mahjong game.
@@ -58,66 +59,28 @@ class Game:
         self.winds = {0: "East", 1: "South", 2: "West", 3: "North"}
         self.wind_of_the_round = self.winds[0]
         self.current_round = 0
-        self.rounds_wind_lost = 0
+        self.round_wind_lost = 0
         self.wind_won = False
-        self.run_game_loop()
 
-    def run_game_loop(self) -> None:
+    def set_players(self, player_names: list) -> dict:
         """
-        Runs the main game loop. The loop will continue until the user chooses to quit.
+        Sets up the players with the given names.
 
-        Returns:
-            None
-        """
-
-        self.players = self.set_players()
-
-        choice = ""
-
-        while choice != "q":
-
-            Printing.clear()
-            print("Enter an option: ")
-            print("- (s)tart next round")
-            print("- (i)nformation about current game")
-            print("- (q)uit")
-            choice = input(">: ")
-
-            Printing.clear()
-
-            if choice.lower() == "s":
-                self.current_round += 1
-                self.score_game()
-                self.reset_round()
-                Printing.clear()
-                self.display_scores()
-
-            elif choice.lower() == "i":
-                self.display_info()
-
-            elif choice.lower() == "q":
-                pass
-
-            else:
-                print("Invalid option...")
-
-    def set_players(self) -> dict:
-        """
-        Prompts for player names and sets up the players.
+        Parameters:
+            player_names (list): A list of player names.
 
         Returns:
             dict: A dictionary mapping player indices to Player objects.
         """
 
-        players = {}
+        self.players = {}
 
         for i in range(4):
-            player_name = input(f"({self.winds[i]}) Enter player {i +1}'s name: ")
-            players[i] = Player(player_name, self.winds[i])
+            self.players[i] = Player(player_names[i], self.winds[i])
 
-        return players
+        return self.players
 
-    def score_game(self) -> None:
+    def score_game(self, winner: str, scores: list) -> None:
         """
         Scores the game for the current round.
 
@@ -125,17 +88,10 @@ class Game:
             None
         """
 
-        winner = input("Who won the round? ")
-        while not self.valid_name(winner):
-            winner = input("Invalid name, try again. Who won the round? ")
+        self.current_round += 1
 
         for i in range(4):
-            try:
-                self.players[i].round_score = int(
-                    input(f"What was {self.players[i].name}'s score: ")
-                )
-            except:
-                raise Exception("Invalid score entered")
+            self.players[i].round_score = int(scores[i])
 
             if self.players[i].name == winner:
                 self.players[i].is_winner = True
@@ -174,7 +130,7 @@ class Game:
                         score_change = score_change * 2
                     player.points += score_change
 
-    def display_scores(self) -> None:
+    def get_names_and_scores(self) -> tuple[list, list]:
         """
         Displays the current scores of all players.
 
@@ -190,64 +146,46 @@ class Game:
 
         score_list, player_list = SortingAlgorithms.sort_scores(score_list, player_list)
 
-        for i in range(4):
-            print("Current Scores:")
-            print(f"{player_list[i]}: {score_list[i]}")
+        return player_list, score_list
 
-        input("\nEnter to continue...")
-
-    def display_info(self):
+    def get_scores(self) -> list:
         """
-        Displays information about the current game state.
+        Returns the current scores of all players.
 
         Returns:
-            None
+            list: A list of strings representing the current scores of all players.
         """
 
-        # =======================
-        # | Round x             |
-        # |---------------------|
-        # | names   N1 N2 N3 N4 |
-        # | wind    w1 w2 w3 w4 |
-        # | points  p1 p1 p1 p1 |
-        # =======================
-        prefix = "| "
-        suffix = " |"
-        row_length = 16
-        columns = []
-        columns.append(["Names ", "Wind  ", "Points"])
-
+        player_list = []
+        score_list = []
         for player in self.players.values():
-            column = [player.name, player.wind, str(player.points)]
-            Printing.align_column(column)
-            row_length += len(column[0])
-            columns.append(column)
+            player_list.append(player.name)
+            score_list.append(player.points)
 
-        round_row = "Round " + str(self.current_round)
-        while len(round_row) < row_length - 2:
-            round_row += " "
+        score_list, player_list = SortingAlgorithms.sort_scores(score_list, player_list)
 
-        ends = "=" * (row_length + 2)
-        separator = "-" * row_length
+        scores = []
+        for i in range(4):
+            scores.append(f"{player_list[i]}:{score_list[i]}")
 
-        names_row = ""
-        wind_row = ""
-        points_row = ""
-        for column in columns:
-            names_row += column[0] + "  "
-            wind_row += column[1] + "  "
-            points_row += column[2] + "  "
+        return scores
 
-        print(ends)
-        print(prefix + round_row + suffix)
-        print(prefix[0] + separator + suffix[1])
-        print(prefix + names_row[0:-2] + suffix)
-        print(prefix + wind_row[0:-2] + suffix)
-        print(prefix + points_row[0:-2] + suffix)
-        print(ends)
-        input("\nEnter to continue...")
+    def get_info(self) -> list:
+        """
+        Returns information about the current game state.
 
-    def reset_round(self):
+        Returns:
+            list: A list of strings representing the current game state.
+        """
+
+        info = []
+        info.append(f"Round:{self.current_round}")
+        for player in self.players.values():
+            info.append(f"{player.name}:{player.wind}:{player.points}")
+
+        return info
+
+    def reset_round(self) -> None:
         """
         Resets the round state for all players.
 
@@ -287,12 +225,12 @@ class Game:
 
         return name in self.get_player_names()
 
-    def get_players(self) -> dict:
+    def get_players(self) -> list:
         """
         Returns the players in the game.
 
         Returns:
-            dict: A dictionary mapping player indices to Player objects.
+            list: A list of Player objects.
         """
         return self.players.values()
 
@@ -303,7 +241,7 @@ class Game:
         Returns:
             list: A list of player names.
         """
-        
+
         names = []
         for player in self.get_players():
             names.append(player.name)
