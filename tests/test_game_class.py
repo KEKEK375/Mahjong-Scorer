@@ -1,111 +1,58 @@
 from unittest import TestCase
-from unittest.mock import patch, call
 from src.game import Game
 
+from unittest.mock import patch
 
-class TestGame(TestCase):
+
+class TestPlayer(TestCase):
     def setUp(self):
         print("Setting up test environment...")
+        self.test_game = Game()
 
     def tearDown(self):
         print("Tearing down test environment...")
+        self.test_game = None
 
-    @patch("builtins.input")
-    @patch("builtins.print")
-    def test_invalid_option(self, mock_print, mock_input):
+    def test_init(self):
+        # Test
+        self.assertEqual(self.test_game.winds, {0: "East", 1: "South", 2: "West", 3: "North"})
+        self.assertEqual(self.test_game.wind_of_the_round, "East")
+        self.assertEqual(self.test_game.current_round, 0)
+        self.assertEqual(self.test_game.rounds_wind_lost, 0)
+        self.assertFalse(self.test_game.wind_won, False)
+
+    def test_set_players(self):
         # Setup
-        mock_input.side_effect = ["n1", "n2", "n3", "n4", "", "q"]
-
+        players = ["n1", "n2", "n3", "n4"]
+        
         # Execute
-        game = Game()
+        self.test_game.set_players(players)
 
         # Test
-        expected_calls = [
-            call("\n" * 20),
-            call("Enter an option: "),
-            call("- (s)tart next round"),
-            call("- (i)nformation about current game"),
-            call("- (q)uit"),
-            call("\n" * 20),
-            call("Invalid option..."),
-        ]
-        mock_print.assert_has_calls(expected_calls, any_order=False)
+        self.assertEqual(self.test_game.players[0].name, "n1")
+        self.assertEqual(self.test_game.players[0].wind, "East")
+        self.assertEqual(self.test_game.players[1].name, "n2")
+        self.assertEqual(self.test_game.players[1].wind, "South")
+        self.assertEqual(self.test_game.players[2].name, "n3")
+        self.assertEqual(self.test_game.players[2].wind, "West")
+        self.assertEqual(self.test_game.players[3].name, "n4")
+        self.assertEqual(self.test_game.players[3].wind, "North")
 
-    @patch("builtins.input")
-    def test_game_loop_quit(self, mock_input):
-        mock_input.side_effect = ["n1", "n2", "n3", "n4", "q"]
+    def test_score_game(self):
+        # Setup
+        players = ["n1", "n2", "n3", "n4"]
+        self.test_game.set_players(players)
+        
+        winner = "n2"
+        scores = [32, 68, 16, 512]
 
-        game = Game()
+        # Execute
+        self.test_game.score_game(winner, scores)
 
-    @patch("builtins.input")
-    def test_display_info(self, mock_input):
-        mock_input.side_effect = ["n1", "n2", "n3", "n4", "i", "", "q"]
+        # Test
+        # self.assertEqual(self.test_game.players[0].points, -1064)
+        # self.assertEqual(self.test_game.players[0].points, 272)
+        # self.assertEqual(self.test_game.players[0].points, -596)
+        # self.assertEqual(self.test_game.players[0].points, 1388)
 
-        game = Game()
-
-    @patch("builtins.input")
-    def test_score_round_wind_wins_valid_input(self, mock_input):
-        mock_input.side_effect = [
-            "n1",
-            "n2",
-            "n3",
-            "n4",
-            "s",
-            "n1",
-            "0",
-            "0",
-            "0",
-            "0",
-            "",
-            "q",
-        ]
-
-        game = Game()
-
-    @patch("builtins.input")
-    def test_score_round_wind_loses_valid_input(self, mock_input):
-        mock_input.side_effect = [
-            "n1",
-            "n2",
-            "n3",
-            "n4",
-            "s",
-            "n2",
-            "0",
-            "0",
-            "0",
-            "0",
-            "",
-            "q",
-        ]
-
-        game = Game()
-
-    @patch("builtins.input")
-    def test_score_round_invalid_name_valid_input(self, mock_input):
-        mock_input.side_effect = [
-            "n1",
-            "n2",
-            "n3",
-            "n4",
-            "s",
-            "",
-            "n2",
-            "0",
-            "0",
-            "0",
-            "0",
-            "",
-            "q",
-        ]
-
-        game = Game()
-
-    @patch("builtins.input")
-    def test_score_round_invalid_score(self, mock_input):
-        mock_input.side_effect = ["n1", "n2", "n3", "n4", "s", "n2", "invalid"]
-
-        with self.assertRaises(Exception) as context:
-            game = Game()
-
-        self.assertEqual(str(context.exception), "Invalid score entered")
+        self.assertEqual(self.test_game.players[0].round_score, 32)

@@ -122,11 +122,3 @@ class TestPlayer(TestCase):
 
         # Test
         self.assertEqual(self.test_player.wind, "South")
-
-    @patch("src.player.Player.get_id")
-    def test_get_id(self, mock_get_id):
-        # Setup
-        mock_get_id.return_value = 0
-        
-        # Execute and Test
-        self.assertEqual(self.test_player.get_id(), 0)

@@ -59,7 +59,7 @@ class Game:
         self.winds = {0: "East", 1: "South", 2: "West", 3: "North"}
         self.wind_of_the_round = self.winds[0]
         self.current_round = 0
-        self.round_wind_lost = 0
+        self.rounds_wind_lost = 0
         self.wind_won = False
 
     def set_players(self, player_names: list) -> dict:
