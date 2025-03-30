@@ -83,7 +83,6 @@ class CLI:
 
             if choice.lower() == "s":
                 self.score_game()
-                self.reset_round()
                 Printing.clear()
                 self.display_scores()
 
@@ -101,16 +100,12 @@ class CLI:
         Prompts for player names and sets up the players.
 
         Returns:
-            dict: A dictionary mapping player indices to Player objects.
+            None
         """
 
-        players = []
+        winds = ["East", "South", "West", "North"]
         for i in range(4):
-            players.append(
-                input(f"({self.game.winds[i]}) Enter player {i + 1}'s name: ")
-            )
-
-        self.game.set_players(players)
+            self.game.set_player(input(f"Enter {winds[i]} player's name: "))
 
     def score_game(self) -> None:
         """
@@ -124,16 +119,14 @@ class CLI:
         while not self.valid_name(winner):
             winner = input("Invalid name, try again. Who won the round? ")
 
-        scores = []
-        for i in range(4):
-            try:
-                scores.append(
-                    int(input(f"What was {self.game.players[i].name}'s score: "))
-                )
-            except:
-                raise Exception("Invalid score entered")
+        for name in self.game.players.keys():
+            score = int(input(f"What was {name}'s score: "))
+            while type(score) != int or score < 0:
+                score = input(f"Invalid score. What was {name}'s score: ")
 
-        self.game.score_game(winner, scores)
+            self.game.players[name].round_score = score
+
+        self.game.score_game(winner)
 
     def display_scores(self) -> None:
         """
@@ -143,10 +136,11 @@ class CLI:
             None
         """
 
-        player_list, score_list = self.game.get_names_and_scores()
-        
+        player_list = [name for name in self.game.players.keys()]
+        score_list = [self.game.players[name].points for name in player_list]
+
+        print("Current Scores:")
         for i in range(4):
-            print("Current Scores:")
             print(f"{player_list[i]}: {score_list[i]}")
 
         input("\nEnter to continue...")
@@ -172,7 +166,7 @@ class CLI:
         columns = []
         columns.append(["Names ", "Wind  ", "Points"])
 
-        for player in self.game.get_players():
+        for player in self.game.players.values():
             column = [player.name, player.wind, str(player.points)]
             Printing.align_column(column)
             row_length += len(column[0])
@@ -202,16 +196,6 @@ class CLI:
         print(ends)
         input("\nEnter to continue...")
 
-    def reset_round(self) -> None:
-        """
-        Resets the round state for all players.
-
-        Returns:
-            None
-        """
-
-        self.game.reset_round()
-
     def valid_name(self, name: str) -> bool:
         """
         Checks if a given name is valid.
@@ -223,4 +207,4 @@ class CLI:
             bool: True if the name is in the list of player names, False otherwise.
         """
 
-        return self.game.valid_name(name)
+        return self.game.name_in_use(name)

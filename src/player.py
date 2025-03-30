@@ -1,42 +1,4 @@
-from itertools import count
-
-
 class Player:
-    """
-    A class to represent a player in the game.
-
-    ...
-
-    Attributes
-    ----------
-    id : int
-        a unique identifier for the player
-    name : str
-        the name of the player
-    wind : str
-        the wind of the player
-    points : int
-        the total points of the player
-    is_winner : bool
-        whether the player won the round
-    round_score : int
-        the score of the player for the current round
-
-    Methods
-    -------
-    reset_after_round(wind_won: bool)
-        Resets the player after a round.
-    next_wind() -> str
-        Returns the next wind of the player.
-    is_valid_wind(wind: str) -> bool
-        Checks if the wind is valid.
-    set_wind(wind: str)
-        Sets the wind of the player.
-    get_id() -> int
-        Returns the player's id.
-    """
-
-    _id = count()
 
     def __init__(self, name: str, wind: str, current_score: int = 0):
         """
@@ -50,13 +12,10 @@ class Player:
         Returns:
             None
         """
-
-        self.__id = next(Player._id)
-        self.name = name
-        self.wind = wind
-        self.points = current_score
-        self.is_winner = False
-        self.round_score = 0
+        self._name = name
+        self._wind = wind
+        self._points = current_score
+        self._round_score = 0
 
     def __repr__(self) -> str:
         """
@@ -77,81 +36,121 @@ class Player:
         """
         return self.name
 
-    def reset_after_round(self, wind_won: bool) -> None:
+    def advance_wind(self) -> None:
         """
-        Resets the player after a round.
-
-        Parameters:
-            wind_won (bool): whether the player won the round
+        Advances the player's wind to the next wind in the cycle.
 
         Returns:
             None
-        """
-
-        self.is_winner = False
-        self.round_score = 0
-        if not wind_won:
-            self.set_wind(self.next_wind())
-
-    def next_wind(self) -> str:
-        """
-        Returns the next wind the player will be assigned.
-
-        Returns:
-            str: the next wind the player will be assigned
         """
 
         if self.wind.lower() == "east":
-            return "North"
-        elif self.wind.lower() == "south":
-            return "East"
-        elif self.wind.lower() == "west":
-            return "South"
+            self.wind = "North"
         elif self.wind.lower() == "north":
-            return "West"
+            self.wind = "West"
+        elif self.wind.lower() == "west":
+            self.wind = "South"
+        elif self.wind.lower() == "south":
+            self.wind = "East"
         else:
-            if not self.is_valid_wind():
-                raise Exception(f"Invalid wind assigned: {self.wind}")
+            raise ValueError(f"Invalid wind value assigned to {self.name}: {self.wind}")
 
-    def is_valid_wind(self, wind: str = None) -> bool:
+    @property
+    def name(self) -> str:
         """
-        Checks if the wind is valid.
-
-        Parameters:
-            wind (str): the wind to check
+        Returns the player's name.
 
         Returns:
-            bool: whether the wind is valid
+            str: the name of the player
         """
 
-        if not wind:
-            wind = self.wind
-        if not wind.lower() in ["east", "south", "west", "north"]:
-            return False
-        return True
+        return self._name
 
-    def set_wind(self, wind: str):
+    @name.setter
+    def name(self, name: str) -> None:
         """
-        Sets the wind of the player.
+        Sets the player's name.
 
         Parameters:
-            wind (str): the wind to set
+            name (str): the name of the player
 
         Returns:
             None
         """
 
-        if self.is_valid_wind(wind):
-            self.wind = wind
-        else:
-            raise Exception(f"Invalid wind provided: {wind}")
+        self._name = name
 
-    def get_id(self):
+    @property
+    def wind(self) -> str:
         """
-        Returns the player's id.
+        Returns the player's wind.
 
         Returns:
-            int: the player's id
+            str: the wind of the player
         """
 
-        return self.__id
+        return self._wind
+
+    @wind.setter
+    def wind(self, wind: str) -> None:
+        """
+        Sets the player's wind.
+
+        Parameters:
+            wind (str): the wind of the player
+
+        Returns:
+            None
+        """
+
+        self._wind = wind
+
+    @property
+    def points(self) -> int:
+        """
+        Returns the player's points.
+
+        Returns:
+            int: the player's points
+        """
+
+        return self._points
+
+    @points.setter
+    def points(self, points: int) -> None:
+        """
+        Sets the player's score.
+
+        Parameters:
+            points (int): the player's points
+
+        Returns:
+            None
+        """
+
+        self._points = points
+
+    @property
+    def round_score(self) -> int:
+        """
+        Returns the player's round score.
+
+        Returns:
+            int: the round score of the player
+        """
+
+        return self._round_score
+
+    @round_score.setter
+    def round_score(self, score: int) -> None:
+        """
+        Sets the player's round score.
+
+        Parameters:
+            round_score (int): the round score of the player
+
+        Returns:
+            None
+        """
+
+        self._round_score = score

@@ -14,7 +14,7 @@ def main():
         type=str,
         help="What to run the module with (CLI or GUI)",
         default="cli",
-        choices=["cli", "gui"]
+        choices=["cli", "gui"],
     )
 
     # Parse the arguments
@@ -23,7 +23,7 @@ def main():
     # Access the parsed arguments
     print(f"Received --args: {args.run_with}")
 
-    my_game = CLI()
+    CLI()
 
 
 if __name__ == "__main__":

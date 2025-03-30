@@ -13,112 +13,71 @@ class TestPlayer(TestCase):
         print("Tearing down test environment...")
         self.test_player = None
 
-    @patch("src.player.Player.get_id")
-    def test_init(self, mock_get_id):
-        # Setup
-        mock_get_id.return_value = 0
-
+    def test_init(self):
         # Test
-        self.assertEqual(self.test_player.get_id(), 0)
         self.assertEqual(self.test_player.name, "test")
         self.assertEqual(self.test_player.wind, "East")
         self.assertEqual(self.test_player.points, 0)
-        self.assertFalse(self.test_player.is_winner)
         self.assertEqual(self.test_player.round_score, 0)
 
     def test_repr(self):
         # Setup
         print_string = "test. Currently east wind. Current score: 0."
+
+        # Test
         self.assertEqual(repr(self.test_player), print_string)
 
     def test_str(self):
         self.assertEqual(str(self.test_player), "test")
 
-    def test_reset_after_round_not_wind_won(self):
+    def test_advance_wind(self):
         # Setup
-        self.test_player.is_winner = True
-        self.test_player.round_score = 100
-        self.assertEqual(self.test_player.wind, "East")
-
-        # Execute
-        self.test_player.reset_after_round(wind_won=False)
+        self.test_player.wind = "East"
 
         # Test
-        self.assertFalse(self.test_player.is_winner)
-        self.assertEqual(self.test_player.round_score, 0)
+        self.test_player.advance_wind()
+        self.assertEqual(self.test_player.wind, "North")
+        self.test_player.advance_wind()
+        self.assertEqual(self.test_player.wind, "West")
+        self.test_player.advance_wind()
+        self.assertEqual(self.test_player.wind, "South")
+        self.test_player.advance_wind()
+        self.assertEqual(self.test_player.wind, "East")
+
+    def test_advance_wind_invalid(self):
+        # Setup
+        self.test_player.wind = "InvalidWind"
+
+        # Test
+        with self.assertRaises(ValueError) as context:
+            self.test_player.advance_wind()
+
+        self.assertEqual(str(context.exception), "Invalid wind value assigned to test: InvalidWind")
+
+    def test_name_property(self):
+        # Setup
+        self.test_player.name = "new_name"
+
+        # Test
+        self.assertEqual(self.test_player.name, "new_name")
+
+    def test_wind_property(self):
+        # Setup
+        self.test_player.wind = "North"
+
+        # Test
         self.assertEqual(self.test_player.wind, "North")
 
-    def test_reset_after_round_wind_won(self):
+    def test_points_property(self):
         # Setup
-        self.test_player.is_winner = True
-        self.test_player.round_score = 100
-        self.assertEqual(self.test_player.wind, "East")
-
-        # Execute
-        self.test_player.reset_after_round(wind_won=True)
+        self.test_player.points = 10
 
         # Test
-        self.assertFalse(self.test_player.is_winner)
-        self.assertEqual(self.test_player.round_score, 0)
-        self.assertEqual(self.test_player.wind, "East")
+        self.assertEqual(self.test_player.points, 10)
 
-    def test_next_wind_fails(self):
+    def test_round_score_property(self):
         # Setup
-        self.test_player.wind = "invalid"
-
-        # Execute
-        with self.assertRaises(Exception) as context:
-            self.test_player.next_wind()
+        self.test_player.round_score = 5
 
         # Test
-        self.assertEqual(str(context.exception), "Invalid wind assigned: invalid")
-
-    def test_next_wind(self):
-        # Setup
-        self.assertEqual(self.test_player.wind, "East")
-
-        # Execute and Test
-        self.assertEqual(self.test_player.next_wind(), "North")
-        self.test_player.wind = "North"
-        self.assertEqual(self.test_player.next_wind(), "West")
-        self.test_player.wind = "West"
-        self.assertEqual(self.test_player.next_wind(), "South")
-        self.test_player.wind = "South"
-        self.assertEqual(self.test_player.next_wind(), "East")
-
-    def test_is_valid_wind_no_wind_fails(self):
-        # Setup
-        self.test_player.wind = "invalid"
-
-        # Execute and Test
-        self.assertFalse(self.test_player.is_valid_wind())
-
-    def test_is_valid_wind_no_wind(self):
-        # Execute and Test
-        self.assertTrue(self.test_player.is_valid_wind())
-
-    def test_is_valid_wind_wind_fails(self):
-        # Execute and Test
-        self.assertFalse(self.test_player.is_valid_wind("invalid"))
-
-    def test_is_valid_wind_wind(self):
-        # Execute and Test
-        self.assertTrue(self.test_player.is_valid_wind("South"))
-
-    def test_set_wind_fails(self):
-        # Execute
-        with self.assertRaises(Exception) as context:
-            self.test_player.set_wind("invalid")
-
-        # Test
-        self.assertEqual(str(context.exception), "Invalid wind provided: invalid")
-
-    def test_set_wind(self):
-        # Setup
-        self.assertEqual(self.test_player.wind, "East")
-
-        # Execute
-        self.test_player.set_wind("South")
-
-        # Test
-        self.assertEqual(self.test_player.wind, "South")
+        self.assertEqual(self.test_player.round_score, 5)
