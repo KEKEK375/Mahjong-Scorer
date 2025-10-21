@@ -1,4 +1,3 @@
-from src.CLI.main import CLI
 from argparse import ArgumentParser
 
 
@@ -13,7 +12,7 @@ def main():
         "--run_with",
         type=str,
         help="What to run the module with (CLI or GUI)",
-        default="cli",
+        default="gui",
         choices=["cli", "gui"],
     )
 
@@ -23,7 +22,12 @@ def main():
     # Access the parsed arguments
     print(f"Received --args: {args.run_with}")
 
-    CLI()
+    if args.run_with == "gui":
+        from src.GUI.main import GUI
+        GUI()
+    elif args.run_with == "cli":
+        from src.CLI.main import CLI
+        CLI()
 
 
 if __name__ == "__main__":

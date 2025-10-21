@@ -28,6 +28,9 @@ class Game:
         else:
             raise ValueError("Cannot add more than 4 players.")
 
+        if self.name_in_use(name):
+            raise ValueError(f"Name {name} is already in use.")
+        
         self.players[name] = Player(name, wind)
 
     def score_game(self, winner: str) -> None:
